@@ -7,9 +7,23 @@ if($_SESSION['name'] == null){
 
 require_once "../vendor/autoload.php";
 $login =  new \App\classes\Login();
+$category = new \App\classes\Categories();
 if(isset($_GET["logout"])){
 
     $login->adminLogout();
+}
+
+
+
+$categoryArray = $category->getAllCategories();
+
+if(isset($_GET["Delete"])){
+    $delId = $_GET["Delete"];
+
+    $res =$category->deleteCategory($delId);
+    if($res == true){
+        header("Location: managecategory.php");
+    }
 }
 ?>
 <!doctype html>
@@ -43,27 +57,39 @@ include "includes/menu.php"
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                        <td>@twitter</td>
-                    </tr>
+                    <?php
+                        while ($row = mysqli_fetch_assoc($categoryArray)){
+                            ?>
+                            <tr>
+                                <th scope="row"><?php echo $row["cId"]?></th>
+                                <td><?php echo $row["categoryName"]?></td>
+                                <?php
+                                    if($row["status"]==0){
+                                        ?>
+                                        <td>Unpublished</td>
+
+                                        <?php
+                                    }else{
+                                        ?>
+                                        <td>Published</td>
+
+                                        <?php
+                                    }
+                                ?>
+                                <td><?php echo $row["categoryDescription"]?></td>
+
+                                <td>
+                                    <a href="updatecategory.php?cid=<?php echo $row["cId"]?>">Edit</a>
+                                    /
+                                    <a href="?Delete=<?php echo $row["cId"]?>">Delete</a>
+                                </td>
+                            </tr>
+
+                            <?php
+                        }
+                    ?>
+
+
                     </tbody>
                 </table>
             </div>

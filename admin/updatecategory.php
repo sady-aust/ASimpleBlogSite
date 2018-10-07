@@ -15,16 +15,31 @@ if(isset($_GET["logout"])){
 
 
 if(isset($_POST["savecategory"])){
- $res = $category->addCategory($_POST);
- if($res == 1){
-     header("Location: managecategory.php");
- }
- else{
-     echo $res;
- }
+    $res = $category->addCategory($_POST);
+    if($res == 1){
+        echo "Inserted";
+    }
+    else{
+        echo $res;
+    }
 }
 
+if(isset($_GET["cid"])){
+    $aCategoryArray = $category->getACategories($_GET["cid"]);
+    $aCategory = mysqli_fetch_assoc($aCategoryArray);
 
+
+}
+
+if(isset($_POST["update"])){
+    $res = $category->updateCategory($_POST,$_POST["cId"]);
+  if($res==1){
+      header("Location: managecategory.php");
+  }
+  else{
+
+  }
+}
 
 ?>
 <!doctype html>
@@ -50,25 +65,45 @@ include "includes/menu.php"
 
                 <form action="" method="post">
                     <div class="form-group row">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Category ID</label>
+                        <div class="col-sm-9">
+                            <input readonly type="text" class="form-control" name="cId" id="inputEmail3"
+                                   placeholder="CategoryName" value="<?php echo $aCategory["cId"]?>">
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="categoryname" id="inputEmail3"
-                                   placeholder="CategoryName">
+                                   placeholder="CategoryName" value="<?php echo $aCategory["categoryName"]?>">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword3" class="col-sm-3 col-form-label">Category Description</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" name="CategoryDescription">
-
+                            <textarea class="form-control"  name="CategoryDescription">
+                                    <?php echo trim($aCategory["categoryDescription"])?>
                             </textarea>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Publication Status</label>
                         <div class="col-sm-9">
-                            <input type="radio"  name="status" value="1">Published
-                            <input type="radio"  name="status" value="0">Unpublished
+                            <?php if($aCategory["status"]==1){
+
+                                ?>
+                                <input type="radio" checked="checked"  name="status" value="1">Published
+                                <input type="radio"  name="status" value="0">Unpublished
+                                <?php
+                            }
+                            else{
+                                ?>
+                                <input type="radio"  name="status" value="1">Published
+                                <input type="radio"  checked="checked" name="status" value="0">Unpublished
+                                <?php
+                            }
+                            ?>
+
 
 
                         </div>
@@ -76,7 +111,7 @@ include "includes/menu.php"
 
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <button type="submit" name="savecategory" class="btn btn-success btn-block">Save Category Info</button>
+                            <button type="submit" name="update" class="btn btn-success btn-block">Update</button>
                         </div>
                     </div>
                 </form>

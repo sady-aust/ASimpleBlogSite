@@ -37,16 +37,39 @@ include "includes/menu.php"
                     <div class="form-group row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="categoryname" id="inputEmail3"
-                                   placeholder="CategoryName">
+                            <select class="form-control">
+                                <option>Hello</option>
+                                <option>Hello</option>
+                                <option>Hello</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword3" class="col-sm-3 col-form-label">Category Description</label>
+                        <label for="inputPassword3" class="col-sm-3 col-form-label">Blog Title</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" name="Category Description">
+                            <input type="text" class="form-control" name="Category Description">
 
-                            </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-3 col-form-label">Short Description</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="Category Description">
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-3 col-form-label">Long Description</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="Category Description">
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-3 col-form-label">Blog Image</label>
+                        <div class="col-sm-9">
+                            <input type="file" class="form-control" name="Category Description">
+
                         </div>
                     </div>
                     <div class="form-group row">
