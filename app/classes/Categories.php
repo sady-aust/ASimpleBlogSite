@@ -38,6 +38,17 @@ class Categories
         }
         return "0";
     }
+
+    public function getAllPublishedCategories(){
+        $query = "SELECT * FROM categories WHERE status = 1";
+
+        if(mysqli_query(Database::dbConnection(),$query)){
+            $res = mysqli_query(Database::dbConnection(),$query);
+
+            return $res;
+        }
+        return "0";
+    }
     public function getACategories($Id){
         $query = "SELECT * FROM categories WHERE cid =".$Id;
 
@@ -70,5 +81,7 @@ class Categories
             return false;
         }
     }
+
+
 
 }

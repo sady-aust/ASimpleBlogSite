@@ -7,10 +7,21 @@ if($_SESSION['name'] == null){
 
 require_once "../vendor/autoload.php";
 $login =  new \App\classes\Login();
+$category =  new \App\classes\Categories();
+$blog = new \App\classes\Blog();
 if(isset($_GET["logout"])){
 
     $login->adminLogout();
 }
+
+$res = $category->getAllPublishedCategories();
+
+if(isset($_POST["saveblog"])){
+
+    $msg = $blog->addBlog($_POST);
+    echo $msg;
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -33,42 +44,45 @@ include "includes/menu.php"
         <div class="card">
             <div class="card-body">
 
-                <form action="" method="post">
+                <form action="" method="post" enctype="multipart/form-data">
                     <div class="form-group row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
                         <div class="col-sm-9">
-                            <select class="form-control">
-                                <option>Hello</option>
-                                <option>Hello</option>
-                                <option>Hello</option>
+                            <select name="categoryId" class="form-control">
+                                <?php while ($row = mysqli_fetch_assoc($res)){
+                                    ?>
+                                    <option value="<?php echo $row["cId"] ?>"><?php echo $row["categoryName"]?></option>
+                                    <?php
+                                }?>
+
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword3" class="col-sm-3 col-form-label">Blog Title</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Category Description">
+                            <input type="text" class="form-control" name="blogtitle">
 
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword3" class="col-sm-3 col-form-label">Short Description</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Category Description">
+                            <input type="text" class="form-control" name="shortdescription">
 
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword3" class="col-sm-3 col-form-label">Long Description</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="Category Description">
+                            <input type="text" class="form-control" name="longdescription">
 
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="inputPassword3" class="col-sm-3 col-form-label">Blog Image</label>
                         <div class="col-sm-9">
-                            <input type="file" class="form-control" name="Category Description">
+                            <input type="file" class="form-control" name="blogimage">
 
                         </div>
                     </div>
@@ -84,7 +98,7 @@ include "includes/menu.php"
 
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <button type="submit" name="submit" class="btn btn-success btn-block">Save Category Info</button>
+                            <button type="submit" name="saveblog" class="btn btn-success btn-block">Save Blog</button>
                         </div>
                     </div>
                 </form>
