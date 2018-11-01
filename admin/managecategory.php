@@ -1,30 +1,32 @@
 <?php
 session_start();
 
-if($_SESSION['name'] == null){
-    header("Location: index.php");
-}
-
 require_once "../vendor/autoload.php";
-$login =  new \App\classes\Login();
-$category = new \App\classes\Categories();
-if(isset($_GET["logout"])){
+use App\classes\Category;
 
-    $login->adminLogout();
+if(isset($_GET["logout"])){
+    if($_GET["logout"] == "true"){
+        $_SESSION["email"] = null;
+        header("Location: index.php");
+    }
+
+
 }
 
-
-
-$categoryArray = $category->getAllCategories();
+$res = Category::GetCategories();
 
 if(isset($_GET["Delete"])){
-    $delId = $_GET["Delete"];
+    $id = $_GET["Delete"];
+    $res = Category::DeleteCategory($id);
 
-    $res =$category->deleteCategory($delId);
-    if($res == true){
+    if($res){
         header("Location: managecategory.php");
     }
+    else{
+        echo "Not Delted";
+    }
 }
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -37,66 +39,66 @@ if(isset($_GET["Delete"])){
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 
 </head>
-<body>
 <?php
-include "includes/menu.php"
+include_once "includes/menu.php";
 ?>
 
-<div class="row">
-    <div class="col-sm-8 m-xl-auto">
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-dark">
-                    <thead>
-                    <tr>
-                        <th scope="col">Sl no</th>
-                        <th scope="col">Catagory Name</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Catagory Description</th>
-                        <th scope="col">Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        while ($row = mysqli_fetch_assoc($categoryArray)){
-                            ?>
-                            <tr>
-                                <th scope="row"><?php echo $row["cId"]?></th>
-                                <td><?php echo $row["categoryName"]?></td>
-                                <?php
-                                    if($row["status"]==0){
-                                        ?>
-                                        <td>Unpublished</td>
 
-                                        <?php
-                                    }else{
-                                        ?>
-                                        <td>Published</td>
+<body>
+<div class="col-sm-8 m-xl-auto">
+    <div class="card">
+        <div class="card-body">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Sl No</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                while ($row = mysqli_fetch_assoc($res)){
 
-                                        <?php
-                                    }
-                                ?>
-                                <td><?php echo $row["categoryDescription"]?></td>
-
-                                <td>
-                                    <a href="updatecategory.php?cid=<?php echo $row["cId"]?>">Edit</a>
-                                    /
-                                    <a href="?Delete=<?php echo $row["cId"]?>">Delete</a>
-                                </td>
-                            </tr>
-
-                            <?php
-                        }
                     ?>
 
+                    <tr>
+                        <th scope="row"><?php echo $row["id"]?></th>
+                        <td><?php echo $row["categoryname"]?></td>
+                        <td><?php echo $row["categorydescription"]?></td>
 
-                    </tbody>
-                </table>
-            </div>
+                       <?php
+                           if($row["status"]==0){
+                               ?>
+                               <td>Unpublished</td>
+
+                               <?php
+                           }else{
+                               ?>
+                               <td>Published</td>
+
+                               <?php
+                           }
+                       ?>
+
+                        <td>
+                            <a href="updatecategory.php?cid=<?php echo $row["id"]?>">Edit</a>
+                            /
+                            <a href="?Delete=<?php echo $row["id"]?>">Delete</a>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
+
+
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="../assets/js/bootstrap.bundle.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>

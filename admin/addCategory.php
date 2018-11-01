@@ -1,30 +1,23 @@
 <?php
 session_start();
 
-if($_SESSION['name'] == null){
-    header("Location: index.php");
-}
-
 require_once "../vendor/autoload.php";
-$login =  new \App\classes\Login();
-$category = new \App\classes\Categories();
+use App\classes\Category;
+
 if(isset($_GET["logout"])){
+    if($_GET["logout"] == "true"){
+        $_SESSION["email"] = null;
+        header("Location: index.php");
+    }
 
-    $login->adminLogout();
+
 }
-
 
 if(isset($_POST["savecategory"])){
- $res = $category->addCategory($_POST);
- if($res == 1){
-     header("Location: managecategory.php");
- }
- else{
-     echo $res;
- }
+   $res = Category::SaveCategory($_POST);
+
+
 }
-
-
 
 ?>
 <!doctype html>
@@ -38,52 +31,70 @@ if(isset($_POST["savecategory"])){
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 
 </head>
-<body>
 <?php
-include "includes/menu.php"
+include_once "includes/menu.php";
 ?>
 
-<div class="row">
+<form method="post" action="">
     <div class="col-sm-8 m-xl-auto">
         <div class="card">
             <div class="card-body">
+                <table class="justify-content-sm-start">
+                    <tr>
+                       <td>
+                           <?php
+                            if(isset($res)){
+                                if ($res == 1){
+                                    echo "Inserted";
+                                }
+                                else{
+                                    echo "Not Inserted";
+                                }
+                            }
+                           ?>
+                       </td>
+                    </tr>
+                    <tr>
+                        <td>Category Name</td>
+                        <td>
+                            <input type="text" class="form-control" name="name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Short Description</td>
+                        <td>
+                            <input type="text" class="form-control" name="shortdescription">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Publication Status</td>
+                       <td>
+                           <div class="form-check form-check-inline">
+                               <input class="form-check-input" type="radio" id="inlineCheckbox1" name="status" value="0">
+                               <label class="form-check-label" for="inlineCheckbox1">Unpublished</label>
+                           </div>
+                           <div class="form-check form-check-inline">
+                               <input class="form-check-input" type="radio" id="inlineCheckbox2" name="status" value="1">
+                               <label class="form-check-label" for="inlineCheckbox2">Published</label>
+                           </div>
+                       </td>
 
-                <form action="" method="post">
-                    <div class="form-group row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" name="categoryname" id="inputEmail3"
-                                   placeholder="CategoryName">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputPassword3" class="col-sm-3 col-form-label">Category Description</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" name="CategoryDescription">
-
-                            </textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Publication Status</label>
-                        <div class="col-sm-9">
-                            <input type="radio"  name="status" value="1">Published
-                            <input type="radio"  name="status" value="0">Unpublished
-
-
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-sm-12">
-                            <button type="submit" name="savecategory" class="btn btn-success btn-block">Save Category Info</button>
-                        </div>
-                    </div>
-                </form>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <button type="submit" name="savecategory" class="btn btn-success btn-block">Save Category Info</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
-</div>
+</form>
+<body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="../assets/js/bootstrap.bundle.js"></script>

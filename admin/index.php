@@ -1,15 +1,19 @@
 <?php
     session_start();
-    if (isset($_SESSION['id'])) {
-    header("Location: dashboard.php");
-    }
+
     require_once "../vendor/autoload.php";
-    $login = new \App\classes\Login();
-    $msg = "";
-    if (isset($_POST["submit"])) {
-        $msg = $login->adminLoginCheck($_POST);
-        //echo $msg;
+
+    use App\classes\login;
+
+    if(isset( $_SESSION["email"])){
+        header("Location: dashboard.php");
     }
+
+    if(isset($_POST["submit"])){
+        $msg = login::adminLoginCheck($_POST);
+        echo $msg;
+    }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,9 +30,7 @@
             <div class="card">
                 <div class="card-body">
                     <h3>
-                        <?php
-                        echo $msg;
-                        ?>
+
                     </h3>
                     <form action="" method="post">
                         <div class="form-group row">

@@ -1,6 +1,8 @@
+
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">Admin Pannel</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -13,7 +15,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                        <a class="dropdown-item" href="addCategory.php">Add Category</a>
+                        <a class="dropdown-item" href="addcategory.php">Add Category</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="managecategory.php">Manage Category</a>
                     </div>
@@ -26,7 +28,7 @@
 
                         <a class="dropdown-item" href="addblog.php">Add Blog</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Manage Blog</a>
+                        <a class="dropdown-item" href="manageblog.php">Manage Blog</a>
                     </div>
                 </li>
 
@@ -39,7 +41,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php
-                        echo $_SESSION['name'];
+                        echo $_SESSION['email'];
                         ?>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">

@@ -1,45 +1,37 @@
 <?php
 session_start();
 
-if($_SESSION['name'] == null){
-    header("Location: index.php");
-}
-
 require_once "../vendor/autoload.php";
-$login =  new \App\classes\Login();
-$category = new \App\classes\Categories();
+use App\classes\Category;
+
 if(isset($_GET["logout"])){
-
-    $login->adminLogout();
-}
-
-
-if(isset($_POST["savecategory"])){
-    $res = $category->addCategory($_POST);
-    if($res == 1){
-        echo "Inserted";
+    if($_GET["logout"] == "true"){
+        $_SESSION["email"] = null;
+        header("Location: index.php");
     }
-    else{
-        echo $res;
-    }
+
+
 }
 
 if(isset($_GET["cid"])){
-    $aCategoryArray = $category->getACategories($_GET["cid"]);
-    $aCategory = mysqli_fetch_assoc($aCategoryArray);
+    $categoryId = $_GET["cid"];
+
+    $aCategory = mysqli_fetch_assoc(Category::getACategory($categoryId));
 
 
 }
 
 if(isset($_POST["update"])){
-    $res = $category->updateCategory($_POST,$_POST["cId"]);
-  if($res==1){
-      header("Location: managecategory.php");
-  }
-  else{
 
-  }
+    $res = Category::UpdateCategoryInfo($_POST);
+   if($res){
+      header("Location: managecategory.php");
+   }
+   else{
+       echo "Not Updated";
+   }
 }
+
 
 ?>
 <!doctype html>
@@ -53,72 +45,96 @@ if(isset($_POST["update"])){
     <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
 
 </head>
-<body>
 <?php
-include "includes/menu.php"
+include_once "includes/menu.php";
 ?>
 
-<div class="row">
+<form method="post" action="">
     <div class="col-sm-8 m-xl-auto">
         <div class="card">
             <div class="card-body">
-
-                <form action="" method="post">
-                    <div class="form-group row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Category ID</label>
-                        <div class="col-sm-9">
-                            <input readonly type="text" class="form-control" name="cId" id="inputEmail3"
-                                   placeholder="CategoryName" value="<?php echo $aCategory["cId"]?>">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Category Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" name="categoryname" id="inputEmail3"
-                                   placeholder="CategoryName" value="<?php echo $aCategory["categoryName"]?>">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputPassword3" class="col-sm-3 col-form-label">Category Description</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control"  name="CategoryDescription">
-                                    <?php echo trim($aCategory["categoryDescription"])?>
-                            </textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Publication Status</label>
-                        <div class="col-sm-9">
-                            <?php if($aCategory["status"]==1){
-
+                <table class="justify-content-sm-start">
+                    <tr>
+                        <td>
+                            <?php
+                            if(isset($res)){
+                                if ($res == 1){
+                                    echo "Inserted";
+                                }
+                                else{
+                                    echo "Not Inserted";
+                                }
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Category Name</td>
+                        <td>
+                            <input type="text" class="form-control" name="name" value="<?php echo $aCategory["categoryname"]?>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="hidden" name="id" value="<?php echo $aCategory["id"]?>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Short Description</td>
+                        <td>
+                            <input type="text" class="form-control" name="shortdescription" value="<?php echo $aCategory["categorydescription"]?>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Publication Status</td>
+                        <?php
+                            if($aCategory["status"]==1){
                                 ?>
-                                <input type="radio" checked="checked"  name="status" value="1">Published
-                                <input type="radio"  name="status" value="0">Unpublished
+                                <td>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="inlineCheckbox1" name="status" value="0" >
+                                        <label class="form-check-label" for="inlineCheckbox1">Unpublished</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="inlineCheckbox2" name="status" value="1" checked="checked">
+                                        <label class="form-check-label" for="inlineCheckbox2">Published</label>
+                                    </div>
+                                </td>
                                 <?php
                             }
                             else{
                                 ?>
-                                <input type="radio"  name="status" value="1">Published
-                                <input type="radio"  checked="checked" name="status" value="0">Unpublished
+                                <td>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="inlineCheckbox1" name="status" value="0" checked="checked">
+                                        <label class="form-check-label" for="inlineCheckbox1">Unpublished</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="inlineCheckbox2" name="status" value="1">
+                                        <label class="form-check-label" for="inlineCheckbox2">Published</label>
+                                    </div>
+                                </td>
                                 <?php
                             }
-                            ?>
+                        ?>
 
 
-
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-sm-12">
-                            <button type="submit" name="update" class="btn btn-success btn-block">Update</button>
-                        </div>
-                    </div>
-                </form>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <button type="submit" name="update" class="btn btn-success btn-block">Update Category Info</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
-</div>
+</form>
+<body>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="../assets/js/bootstrap.bundle.js"></script>
